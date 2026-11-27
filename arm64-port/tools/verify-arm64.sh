@@ -27,7 +27,7 @@ for lib in libImageOp.so libGLImageOp.so; do
 done
 
 if [[ -f "$ROOT/lib/arm64-v8a/libGLImageOp.so" ]]; then
-  readelf -d "$ROOT/lib/arm64-v8a/libGLImageOp.so" | grep 'Shared library: \\[libImageOp.so\\]' >/dev/null || {
+  readelf -d "$ROOT/lib/arm64-v8a/libGLImageOp.so" | grep -F 'Shared library: [libImageOp.so]' >/dev/null || {
     echo "FAIL: libGLImageOp.so does not declare libImageOp.so dependency"
     fail=1
   }
