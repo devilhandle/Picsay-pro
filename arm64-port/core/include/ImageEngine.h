@@ -2,12 +2,14 @@
 #include <cstdint>
 #include <vector>
 #include <string>
+#include <cstddef>
+#include <limits>
 
 namespace picsay {
 struct Image {
     int width=0, height=0;
     std::vector<uint8_t> rgba;
-    bool valid() const { return width>0 && height>0 && rgba.size()==size_t(width)*height*4; }
+    bool valid() const { if(width<=0||height<=0)return false;const size_t w=size_t(width),h=size_t(height);if(w>std::numeric_limits<size_t>::max()/4/h)return false;return rgba.size()==w*h*4; }
 };
 bool invert(Image&);
 bool grayscale(Image&);
