@@ -36,14 +36,25 @@ jobs:
           grep -R -n -E 'loadLibrary|ImageOp|GLImageOp' build/decompiled/sources || true
           echo "=== Decompiled classes ==="
           find build/decompiled/sources -type f -name '*.java' | wc -l
-      - name: Preserve decompilation report
+      - name: Extract complete Java JNI contract and reference ELF symbols
         run: |
+          mkdir -p build/reference-native
+          unzip -j Picsay_Pro_v2.3.3.1_1766148552_latestmodapks.com.apk 'lib/armeabi-v7a/*.so' -d build/reference-native
+          unzip -j Picsay_Pro_v2.3.3.1_1766148552_latestmodapks.com.apk 'lib/x86/*.so' -d build/reference-native
           {
-            echo "=== Native method declarations ==="
-            grep -R -n -E 'native[[:space:]]+' build/decompiled/sources || true
-            echo "=== Library loading ==="
+            echo "=== ALL Java native declarations ==="
+            grep -R -n -E '\\bnative\\b' build/decompiled/sources || true
+            echo "=== Native library loading sites ==="
             grep -R -n -E 'loadLibrary|ImageOp|GLImageOp' build/decompiled/sources || true
+            for lib in build/reference-native/*.so; do
+              echo "=== ELF SYMBOLS: $lib ==="
+              readelf -h "$lib" | grep -E 'Class:|Machine:'
+              readelf -Ws "$lib" | grep -E 'GLOBAL|WEAK' || true
+              echo "=== STRINGS: $lib ==="
+              strings -a "$lib" | grep -E 'Java_|JNI_OnLoad|register|TimImageProxy|SCImage|PEStroke|PEWarp|Bitmap|ImageOp' | sort -u || true
+            done
           } > build/native-contract.txt
+          cat build/native-contract.txt
       - uses: actions/upload-artifact@v4
         with:
           name: picsay-original-apk-decompiled-contract
