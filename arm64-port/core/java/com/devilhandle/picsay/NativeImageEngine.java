@@ -22,4 +22,9 @@ public final class NativeImageEngine {
     public static native boolean adjust(Bitmap bitmap, float brightness, float contrast, float saturation);
     public static native boolean vignette(Bitmap bitmap, float strength, float radius);
     public static native boolean blend(Bitmap destination, Bitmap source, int x, int y, float opacity);
+    public static native boolean heatMap(Bitmap bitmap, float intensity);
+    public static native boolean mirror(Bitmap bitmap, boolean horizontal, boolean vertical);
+    public static native boolean quantizeLuminance(Bitmap bitmap, int levels);
+    public static native boolean boost(Bitmap bitmap, float amount);
+    public static native boolean multiplyColor(Bitmap bitmap, int rgba, float amount);
 }
