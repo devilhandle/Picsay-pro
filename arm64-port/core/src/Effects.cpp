@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstring>
+#include <functional>
 namespace picsay {
 static inline uint8_t eclamp(float v){return uint8_t(std::max(0.f,std::min(255.f,v)));}
 static inline size_t ep(const Image&i,int x,int y){return (size_t(y)*i.width+x)*4;}
