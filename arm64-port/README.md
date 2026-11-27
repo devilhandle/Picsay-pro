@@ -41,6 +41,7 @@ If the original source is unavailable, a genuine port requires carefully reconst
 
 - `JNI-CONTRACT.md`: all 45 native declarations extracted from `classes.dex`, with exact JNI descriptors.
 - `NATIVE-ENGINE-INVENTORY.md`: ARMv7 native export inventory and identified image-processing subsystems.
+- `ARM64-VALIDATION-PLAN.md`: device ABI checks, runtime JNI checks, and the functional image-editing test matrix.
 - `tools/extract_jni_contract.py`: standalone DEX parser to reproduce the native-method list.
 - `tools/verify-arm64.sh`: checks that both packaged libraries are ELF64/AArch64 and that the GL library links to `libImageOp.so`.
 
