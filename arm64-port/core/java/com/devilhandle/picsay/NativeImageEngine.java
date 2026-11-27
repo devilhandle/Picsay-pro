@@ -18,5 +18,5 @@ public final class NativeImageEngine {
     public static native boolean temperature(Bitmap bitmap, float shift);
     public static native boolean pixelize(Bitmap bitmap, int blockSize);
     public static native boolean bulge(Bitmap bitmap, float cx, float cy, float radius, float strength);
-    public static native boolean twirl(Bitmap bitmap, float cx, float cy, float radius, float radians);
+    public static native boolean twirl(Bitmap bitmap, float cx, float cy, float radius, float radians);\n    public static native boolean adjust(Bitmap bitmap, float brightness, float contrast, float saturation);\n    public static native boolean vignette(Bitmap bitmap, float strength, float radius);\n    public static native boolean blend(Bitmap destination, Bitmap source, int x, int y, float opacity);
 }
