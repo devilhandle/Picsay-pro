@@ -33,6 +33,6 @@ static JNINativeMethod methods[]={
  {const_cast<char*>("temperature"),const_cast<char*>("(Landroid/graphics/Bitmap;F)Z"),reinterpret_cast<void*>(temperature)},
  {const_cast<char*>("pixelize"),const_cast<char*>("(Landroid/graphics/Bitmap;I)Z"),reinterpret_cast<void*>(pixelize)},
  {const_cast<char*>("bulge"),const_cast<char*>("(Landroid/graphics/Bitmap;FFFF)Z"),reinterpret_cast<void*>(bulge)},
- {const_cast<char*>("twirl"),const_cast<char*>("(Landroid/graphics/Bitmap;FFFF)Z"),reinterpret_cast<void*>(twirl)}
+ {const_cast<char*>("twirl"),const_cast<char*>("(Landroid/graphics/Bitmap;FFFF)Z"),reinterpret_cast<void*>(twirl)},\n {const_cast<char*>("adjust"),const_cast<char*>("(Landroid/graphics/Bitmap;FFF)Z"),reinterpret_cast<void*>(adjust)},\n {const_cast<char*>("vignette"),const_cast<char*>("(Landroid/graphics/Bitmap;FF)Z"),reinterpret_cast<void*>(vignette)},\n {const_cast<char*>("blend"),const_cast<char*>("(Landroid/graphics/Bitmap;Landroid/graphics/Bitmap;IIF)Z"),reinterpret_cast<void*>(blend)}
 };
 JNIEXPORT jint JNI_OnLoad(JavaVM* vm,void*){JNIEnv* env=nullptr;if(vm->GetEnv(reinterpret_cast<void**>(&env),JNI_VERSION_1_6)!=JNI_OK)return JNI_ERR;jclass cls=env->FindClass("com/devilhandle/picsay/NativeImageEngine");if(!cls)return JNI_ERR;if(env->RegisterNatives(cls,methods,sizeof(methods)/sizeof(methods[0]))!=JNI_OK)return JNI_ERR;return JNI_VERSION_1_6;}
