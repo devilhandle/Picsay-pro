@@ -16,7 +16,7 @@ types = {
     "float[]": "[F",
 }
 declared = {}
-for name, args in re.findall(r"public\\s+static\\s+native\\s+boolean\\s+(\\w+)\\(([^)]*)\\)\\s*;", java):
+for name, args in re.findall(r"public\s+static\s+native\s+boolean\s+(\w+)\(([^)]*)\)\s*;", java):
     params = []
     for arg in filter(None, (part.strip() for part in args.split(","))):
         pieces = arg.split()
@@ -27,7 +27,7 @@ for name, args in re.findall(r"public\\s+static\\s+native\\s+boolean\\s+(\\w+)\\
 
 registered = {}
 for name, signature in re.findall(
-    r'const_cast<char\\*>\\("([A-Za-z0-9_]+)"\\),\\s*const_cast<char\\*>\\("([^"]+)"\\)',
+    r'const_cast<char\*>\("([A-Za-z0-9_]+)"\),\s*const_cast<char\*>\("([^"]+)"\)',
     cpp,
 ):
     registered[name] = signature
@@ -40,6 +40,6 @@ for name, signature in declared.items():
 for name in registered.keys() - declared.keys():
     errors.append(f"{name}: registered in JNI but missing from Java facade")
 if errors:
-    print("\\n".join(errors), file=sys.stderr)
+    print("\n".join(errors), file=sys.stderr)
     raise SystemExit(1)
 print(f"JNI facade verified: {len(declared)} native methods match exactly.")
