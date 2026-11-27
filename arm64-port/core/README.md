@@ -8,12 +8,12 @@
 - Independent C++17 CPU image engine: invert, grayscale, brightness/contrast/saturation,
   box blur, sharpen, alpha compositing, crop, quarter-turn rotation, pixelize, bulge.
 - Additional effects: temperature, sepia, 4x5 color matrix, Sobel, vignette, twirl,
-  spherize, linear stretch, circle-splash distortion, and color mixing.
+  spherize, linear stretch, circle-splash distortion, color mixing, heat map, mirror, luminance quantization, color boost, and multiply-color blending.
 - Android Bitmap JNI facade in `java/com/devilhandle/picsay/NativeImageEngine.java`
   and `src/AndroidBitmapBridge.cpp`. It handles mutable RGBA_8888 bitmaps with
   Android row-stride and lock/unlock semantics.
 - CMake builds `libpicsay_engine.so` for Android and host-side test executables.
-- GitHub Actions runs host tests and cross-compiles the Android arm64-v8a JNI library.
+- GitHub Actions runs host tests, AddressSanitizer/UndefinedBehaviorSanitizer checks, and cross-compiles the Android arm64-v8a JNI library.
 
 ## Build locally
 
