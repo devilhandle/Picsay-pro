@@ -23,6 +23,11 @@ jboolean temperature(JNIEnv*e,jclass,jobject b,jfloat a){LockedBitmap l;if(!l.op
 jboolean pixelize(JNIEnv*e,jclass,jobject b,jint n){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::pixelize(im,n)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
 jboolean bulge(JNIEnv*e,jclass,jobject b,jfloat x,jfloat y,jfloat r,jfloat s){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::warpBulge(im,x,y,r,s)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
 jboolean twirl(JNIEnv*e,jclass,jobject b,jfloat x,jfloat y,jfloat r,jfloat a){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::twirl(im,x,y,r,a)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
+
+jboolean adjust(JNIEnv*e,jclass,jobject b,jfloat brightness,jfloat contrast,jfloat saturation){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::adjust(im,brightness,contrast,saturation)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
+jboolean vignette(JNIEnv*e,jclass,jobject b,jfloat strength,jfloat radius){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::vignette(im,strength,radius)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
+jboolean blend(JNIEnv*e,jclass,jobject dst,jobject src,jint x,jint y,jfloat opacity){LockedBitmap d,s;if(!d.open(e,dst)||!s.open(e,src))return JNI_FALSE;picsay::Image di,si;if(!d.read(di)||!s.read(si)||!picsay::blend(di,si,x,y,opacity)||!d.write(di))return JNI_FALSE;return JNI_TRUE;}
+
 }
 static JNINativeMethod methods[]={
  {const_cast<char*>("invert"),const_cast<char*>("(Landroid/graphics/Bitmap;)Z"),reinterpret_cast<void*>(invert)},
@@ -33,6 +38,9 @@ static JNINativeMethod methods[]={
  {const_cast<char*>("temperature"),const_cast<char*>("(Landroid/graphics/Bitmap;F)Z"),reinterpret_cast<void*>(temperature)},
  {const_cast<char*>("pixelize"),const_cast<char*>("(Landroid/graphics/Bitmap;I)Z"),reinterpret_cast<void*>(pixelize)},
  {const_cast<char*>("bulge"),const_cast<char*>("(Landroid/graphics/Bitmap;FFFF)Z"),reinterpret_cast<void*>(bulge)},
- {const_cast<char*>("twirl"),const_cast<char*>("(Landroid/graphics/Bitmap;FFFF)Z"),reinterpret_cast<void*>(twirl)},\n {const_cast<char*>("adjust"),const_cast<char*>("(Landroid/graphics/Bitmap;FFF)Z"),reinterpret_cast<void*>(adjust)},\n {const_cast<char*>("vignette"),const_cast<char*>("(Landroid/graphics/Bitmap;FF)Z"),reinterpret_cast<void*>(vignette)},\n {const_cast<char*>("blend"),const_cast<char*>("(Landroid/graphics/Bitmap;Landroid/graphics/Bitmap;IIF)Z"),reinterpret_cast<void*>(blend)}
+ {const_cast<char*>("twirl"),const_cast<char*>("(Landroid/graphics/Bitmap;FFFF)Z"),reinterpret_cast<void*>(twirl)},
+ {const_cast<char*>("adjust"),const_cast<char*>("(Landroid/graphics/Bitmap;FFF)Z"),reinterpret_cast<void*>(adjust)},
+ {const_cast<char*>("vignette"),const_cast<char*>("(Landroid/graphics/Bitmap;FF)Z"),reinterpret_cast<void*>(vignette)},
+ {const_cast<char*>("blend"),const_cast<char*>("(Landroid/graphics/Bitmap;Landroid/graphics/Bitmap;IIF)Z"),reinterpret_cast<void*>(blend)}
 };
 JNIEXPORT jint JNI_OnLoad(JavaVM* vm,void*){JNIEnv* env=nullptr;if(vm->GetEnv(reinterpret_cast<void**>(&env),JNI_VERSION_1_6)!=JNI_OK)return JNI_ERR;jclass cls=env->FindClass("com/devilhandle/picsay/NativeImageEngine");if(!cls)return JNI_ERR;if(env->RegisterNatives(cls,methods,sizeof(methods)/sizeof(methods[0]))!=JNI_OK)return JNI_ERR;return JNI_VERSION_1_6;}
