@@ -1,0 +1,39 @@
+name: PicSay native core validation
+on:
+  push:
+    paths:
+      - "arm64-port/core/**"
+      - ".github/workflows/picsay-native-core.yml"
+  pull_request:
+    paths:
+      - "arm64-port/core/**"
+      - ".github/workflows/picsay-native-core.yml"
+  workflow_dispatch:
+jobs:
+  host-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S arm64-port/core -B build/host -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build/host --parallel
+      - name: Test
+        run: ctest --test-dir build/host --output-on-failure
+  android-arm64-core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure ARM64 core with Android NDK
+        run: |
+          cmake -S arm64-port/core -B build/android-arm64 \
+            -DCMAKE_TOOLCHAIN_FILE="$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake" \
+            -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-24 \
+            -DPICSAY_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release
+      - name: Build ARM64 static engine
+        run: cmake --build build/android-arm64 --parallel
+      - name: Package build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: picsay-arm64-cpu-engine
+          path: build/android-arm64/libPicSayImageEngine.a
