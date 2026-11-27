@@ -2,13 +2,14 @@
 #include <android/bitmap.h>
 #include <algorithm>
 #include <cstring>
+#include <limits>
 #include "ImageEngine.h"
 #include "Effects.h"
 
 namespace {
 struct LockedBitmap {
  JNIEnv* env; jobject bitmap; AndroidBitmapInfo info{}; void* pixels=nullptr;
- bool open(JNIEnv* e,jobject b){env=e;bitmap=b;if(!b||AndroidBitmap_getInfo(e,b,&info)!=ANDROID_BITMAP_RESULT_SUCCESS)return false;if(info.format!=ANDROID_BITMAP_FORMAT_RGBA_8888)return false;if(AndroidBitmap_lockPixels(e,b,&pixels)!=ANDROID_BITMAP_RESULT_SUCCESS)return false;return true;}
+ bool open(JNIEnv* e,jobject b){env=e;bitmap=b;if(!b||AndroidBitmap_getInfo(e,b,&info)!=ANDROID_BITMAP_RESULT_SUCCESS)return false;if(info.format!=ANDROID_BITMAP_FORMAT_RGBA_8888||info.width==0||info.height==0)return false;if(info.width>uint32_t(std::numeric_limits<int>::max())||info.height>uint32_t(std::numeric_limits<int>::max()))return false;if(uint64_t(info.width)*4>info.stride)return false;if(uint64_t(info.width)*info.height>std::numeric_limits<size_t>::max()/4)return false;if(AndroidBitmap_lockPixels(e,b,&pixels)!=ANDROID_BITMAP_RESULT_SUCCESS)return false;return true;}
  ~LockedBitmap(){if(pixels)AndroidBitmap_unlockPixels(env,bitmap);}
  bool read(picsay::Image& out){if(!pixels||info.width==0||info.height==0)return false;out.width=int(info.width);out.height=int(info.height);out.rgba.resize(size_t(out.width)*out.height*4);for(int y=0;y<out.height;y++)std::memcpy(&out.rgba[size_t(y)*out.width*4],static_cast<uint8_t*>(pixels)+size_t(y)*info.stride,size_t(out.width)*4);return true;}
  bool write(const picsay::Image& in){if(!pixels||in.width!=int(info.width)||in.height!=int(info.height)||!in.valid())return false;for(int y=0;y<in.height;y++)std::memcpy(static_cast<uint8_t*>(pixels)+size_t(y)*info.stride,&in.rgba[size_t(y)*in.width*4],size_t(in.width)*4);return true;}
@@ -26,7 +27,7 @@ jboolean twirl(JNIEnv*e,jclass,jobject b,jfloat x,jfloat y,jfloat r,jfloat a){Lo
 
 jboolean adjust(JNIEnv*e,jclass,jobject b,jfloat brightness,jfloat contrast,jfloat saturation){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::adjust(im,brightness,contrast,saturation)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
 jboolean vignette(JNIEnv*e,jclass,jobject b,jfloat strength,jfloat radius){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::vignette(im,strength,radius)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
-jboolean blend(JNIEnv*e,jclass,jobject dst,jobject src,jint x,jint y,jfloat opacity){LockedBitmap d,s;if(!d.open(e,dst)||!s.open(e,src))return JNI_FALSE;picsay::Image di,si;if(!d.read(di)||!s.read(si)||!picsay::blend(di,si,x,y,opacity)||!d.write(di))return JNI_FALSE;return JNI_TRUE;}
+jboolean blend(JNIEnv*e,jclass,jobject dst,jobject src,jint x,jint y,jfloat opacity){if(!dst||!src||e->IsSameObject(dst,src))return JNI_FALSE;LockedBitmap d,s;if(!d.open(e,dst)||!s.open(e,src))return JNI_FALSE;picsay::Image di,si;if(!d.read(di)||!s.read(si)||!picsay::blend(di,si,x,y,opacity)||!d.write(di))return JNI_FALSE;return JNI_TRUE;}
 
 }
 static JNINativeMethod methods[]={
