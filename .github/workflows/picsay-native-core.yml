@@ -35,6 +35,10 @@ jobs:
             -DPICSAY_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release
       - name: Build ARM64 static engine
         run: cmake --build build/android-arm64 --parallel
+      - name: Verify shared object is ELF64 AArch64
+        run: |
+          readelf -h build/android-arm64/libpicsay_engine.so | grep -q 'Class:.*ELF64'
+          readelf -h build/android-arm64/libpicsay_engine.so | grep -q 'Machine:.*AArch64'
       - name: Package build artifact
         uses: actions/upload-artifact@v4
         with:
