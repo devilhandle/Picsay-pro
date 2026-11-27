@@ -36,4 +36,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: picsay-arm64-cpu-engine
-          path: build/android-arm64/libPicSayImageEngine.a
+          path: |
+            build/android-arm64/libPicSayImageEngine.a
+            build/android-arm64/libpicsay_engine.so
