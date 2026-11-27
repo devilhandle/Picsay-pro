@@ -22,7 +22,7 @@ jboolean sepia(JNIEnv*e,jclass,jobject b,jfloat a){LockedBitmap l;if(!l.open(e,b
 jboolean temperature(JNIEnv*e,jclass,jobject b,jfloat a){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::temperature(im,a)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
 jboolean pixelize(JNIEnv*e,jclass,jobject b,jint n){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::pixelize(im,n)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
 jboolean bulge(JNIEnv*e,jclass,jobject b,jfloat x,jfloat y,jfloat r,jfloat s){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::warpBulge(im,x,y,r,s)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
-jboolean twirl(JNIEnv*e,jclass,jobject b,jfloat x,jfloat y,jfloat r,jfloat a){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::twirl(im,x,y,r,a)||!l.write(im))return JNI_TRUE;return JNI_TRUE;}
+jboolean twirl(JNIEnv*e,jclass,jobject b,jfloat x,jfloat y,jfloat r,jfloat a){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::twirl(im,x,y,r,a)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
 }
 static JNINativeMethod methods[]={
  {const_cast<char*>("invert"),const_cast<char*>("(Landroid/graphics/Bitmap;)Z"),reinterpret_cast<void*>(invert)},
