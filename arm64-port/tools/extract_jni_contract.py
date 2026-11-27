@@ -30,7 +30,7 @@ def read_dex(data):
     for i in range(string_count):
         off = u32(string_off + i * 4)
         _, off = uleb(data, off)  # UTF-16 length; UTF-8 bytes are zero-terminated.
-        end = data.index(b"\\0", off)
+        end = data.index(bytes([0]), off)
         strings.append(data[off:end].decode("utf-8", "replace"))
 
     types = [strings[u32(type_off + i * 4)] for i in range(type_count)]
