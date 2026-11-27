@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - "arm64-port/core/**"
+      - "arm64-port/tools/**"
       - ".github/workflows/picsay-native-core.yml"
   pull_request:
     paths:
