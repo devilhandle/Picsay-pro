@@ -37,6 +37,13 @@ Rebuild both libraries from their original C/C++ sources with the Android NDK fo
 
 If the original source is unavailable, a genuine port requires carefully reconstructing the native implementation from the reference binaries and JNI contracts. A dummy library or renamed 32-bit binary would only hide the missing functionality and is intentionally not supplied here.
 
+## Reverse-engineering artifacts
+
+- `JNI-CONTRACT.md`: all 45 native declarations extracted from `classes.dex`, with exact JNI descriptors.
+- `NATIVE-ENGINE-INVENTORY.md`: ARMv7 native export inventory and identified image-processing subsystems.
+- `tools/extract_jni_contract.py`: standalone DEX parser to reproduce the native-method list.
+- `tools/verify-arm64.sh`: checks that both packaged libraries are ELF64/AArch64 and that the GL library links to `libImageOp.so`.
+
 ## Build scaffold
 
 See `CMakeLists.txt`. It deliberately refuses to build until the real native source files are added; this prevents accidentally producing nonfunctional placeholder libraries.
