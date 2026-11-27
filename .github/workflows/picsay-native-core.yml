@@ -39,8 +39,8 @@ jobs:
       - name: Extract complete Java JNI contract and reference ELF symbols
         run: |
           mkdir -p build/reference-native
-          unzip -j Picsay_Pro_v2.3.3.1_1766148552_latestmodapks.com.apk 'lib/armeabi-v7a/*.so' -d build/reference-native
-          unzip -j Picsay_Pro_v2.3.3.1_1766148552_latestmodapks.com.apk 'lib/x86/*.so' -d build/reference-native
+          unzip -oj Picsay_Pro_v2.3.3.1_1766148552_latestmodapks.com.apk 'lib/armeabi-v7a/*.so' -d build/reference-native
+          unzip -oj Picsay_Pro_v2.3.3.1_1766148552_latestmodapks.com.apk 'lib/x86/*.so' -d build/reference-native
           {
             echo "=== ALL Java native declarations ==="
             grep -R -n -E '\\bnative\\b' build/decompiled/sources || true
