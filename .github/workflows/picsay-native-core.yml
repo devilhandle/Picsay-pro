@@ -11,6 +11,12 @@ on:
       - ".github/workflows/picsay-native-core.yml"
   workflow_dispatch:
 jobs:
+  original-apk-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit original APK package and native ABIs
+        run: python3 arm64-port/tools/audit-apk-package.py
   host-tests:
     runs-on: ubuntu-latest
     steps:
@@ -46,7 +52,6 @@ jobs:
           path: |
             build/android-arm64/libPicSayImageEngine.a
             build/android-arm64/libpicsay_engine.so
-
   sanitizer-tests:
     runs-on: ubuntu-latest
     steps:
