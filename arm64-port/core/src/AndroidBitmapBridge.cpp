@@ -29,6 +29,11 @@ jboolean adjust(JNIEnv*e,jclass,jobject b,jfloat brightness,jfloat contrast,jflo
 jboolean vignette(JNIEnv*e,jclass,jobject b,jfloat strength,jfloat radius){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::vignette(im,strength,radius)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
 jboolean blend(JNIEnv*e,jclass,jobject dst,jobject src,jint x,jint y,jfloat opacity){if(!dst||!src||e->IsSameObject(dst,src))return JNI_FALSE;LockedBitmap d,s;if(!d.open(e,dst)||!s.open(e,src))return JNI_FALSE;picsay::Image di,si;if(!d.read(di)||!s.read(si)||!picsay::blend(di,si,x,y,opacity)||!d.write(di))return JNI_FALSE;return JNI_TRUE;}
 
+jboolean heatMap(JNIEnv*e,jclass,jobject b,jfloat amount){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::heatMap(im,amount)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
+jboolean mirror(JNIEnv*e,jclass,jobject b,jboolean h,jboolean v){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::mirror(im,h==JNI_TRUE,v==JNI_TRUE)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
+jboolean quantize(JNIEnv*e,jclass,jobject b,jint levels){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::quantizeLuminance(im,levels)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
+jboolean boost(JNIEnv*e,jclass,jobject b,jfloat amount){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::boost(im,amount)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
+jboolean multiplyColor(JNIEnv*e,jclass,jobject b,jint color,jfloat amount){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::multiplyColor(im,uint32_t(color),amount)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
 }
 static JNINativeMethod methods[]={
  {const_cast<char*>("invert"),const_cast<char*>("(Landroid/graphics/Bitmap;)Z"),reinterpret_cast<void*>(invert)},
@@ -42,6 +47,11 @@ static JNINativeMethod methods[]={
  {const_cast<char*>("twirl"),const_cast<char*>("(Landroid/graphics/Bitmap;FFFF)Z"),reinterpret_cast<void*>(twirl)},
  {const_cast<char*>("adjust"),const_cast<char*>("(Landroid/graphics/Bitmap;FFF)Z"),reinterpret_cast<void*>(adjust)},
  {const_cast<char*>("vignette"),const_cast<char*>("(Landroid/graphics/Bitmap;FF)Z"),reinterpret_cast<void*>(vignette)},
- {const_cast<char*>("blend"),const_cast<char*>("(Landroid/graphics/Bitmap;Landroid/graphics/Bitmap;IIF)Z"),reinterpret_cast<void*>(blend)}
+ {const_cast<char*>("blend"),const_cast<char*>("(Landroid/graphics/Bitmap;Landroid/graphics/Bitmap;IIF)Z"),reinterpret_cast<void*>(blend)},
+ {const_cast<char*>("heatMap"),const_cast<char*>("(Landroid/graphics/Bitmap;F)Z"),reinterpret_cast<void*>(heatMap)},
+ {const_cast<char*>("mirror"),const_cast<char*>("(Landroid/graphics/Bitmap;ZZ)Z"),reinterpret_cast<void*>(mirror)},
+ {const_cast<char*>("quantizeLuminance"),const_cast<char*>("(Landroid/graphics/Bitmap;I)Z"),reinterpret_cast<void*>(quantize)},
+ {const_cast<char*>("boost"),const_cast<char*>("(Landroid/graphics/Bitmap;F)Z"),reinterpret_cast<void*>(boost)},
+ {const_cast<char*>("multiplyColor"),const_cast<char*>("(Landroid/graphics/Bitmap;IF)Z"),reinterpret_cast<void*>(multiplyColor)}
 };
 JNIEXPORT jint JNI_OnLoad(JavaVM* vm,void*){JNIEnv* env=nullptr;if(vm->GetEnv(reinterpret_cast<void**>(&env),JNI_VERSION_1_6)!=JNI_OK)return JNI_ERR;jclass cls=env->FindClass("com/devilhandle/picsay/NativeImageEngine");if(!cls)return JNI_ERR;if(env->RegisterNatives(cls,methods,sizeof(methods)/sizeof(methods[0]))!=JNI_OK)return JNI_ERR;return JNI_VERSION_1_6;}
