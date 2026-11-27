@@ -27,4 +27,10 @@ public final class NativeImageEngine {
     public static native boolean quantizeLuminance(Bitmap bitmap, int levels);
     public static native boolean boost(Bitmap bitmap, float amount);
     public static native boolean multiplyColor(Bitmap bitmap, int rgba, float amount);
+    public static native boolean sobel(Bitmap bitmap, float strength);
+    public static native boolean spherize(Bitmap bitmap, float cx, float cy, float radius, float strength);
+    public static native boolean linearStretch(Bitmap bitmap, float cx, float cy, float halfWidth, float scale);
+    public static native boolean circleSplash(Bitmap bitmap, float cx, float cy, float radius, int segments);
+    public static native boolean mixColor(Bitmap bitmap, int rgba, float amount);
+    public static native boolean colorMatrix(Bitmap bitmap, float[] matrix4x5);
 }
