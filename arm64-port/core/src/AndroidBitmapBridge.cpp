@@ -34,6 +34,12 @@ jboolean mirror(JNIEnv*e,jclass,jobject b,jboolean h,jboolean v){LockedBitmap l;
 jboolean quantize(JNIEnv*e,jclass,jobject b,jint levels){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::quantizeLuminance(im,levels)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
 jboolean boost(JNIEnv*e,jclass,jobject b,jfloat amount){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::boost(im,amount)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
 jboolean multiplyColor(JNIEnv*e,jclass,jobject b,jint color,jfloat amount){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::multiplyColor(im,uint32_t(color),amount)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
+jboolean sobel(JNIEnv*e,jclass,jobject b,jfloat strength){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::sobel(im,strength)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
+jboolean spherize(JNIEnv*e,jclass,jobject b,jfloat x,jfloat y,jfloat r,jfloat s){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::spherize(im,x,y,r,s)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
+jboolean linearStretch(JNIEnv*e,jclass,jobject b,jfloat x,jfloat y,jfloat w,jfloat scale){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::linearStretch(im,x,y,w,scale)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
+jboolean circleSplash(JNIEnv*e,jclass,jobject b,jfloat x,jfloat y,jfloat r,jint segments){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::circleSplash(im,x,y,r,segments)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
+jboolean mixColor(JNIEnv*e,jclass,jobject b,jint color,jfloat amount){LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::mixColor(im,uint32_t(color),amount)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
+jboolean colorMatrix(JNIEnv*e,jclass,jobject b,jfloatArray matrix){if(!matrix||e->GetArrayLength(matrix)!=20)return JNI_FALSE;float values[20];e->GetFloatArrayRegion(matrix,0,20,values);if(e->ExceptionCheck())return JNI_FALSE;LockedBitmap l;if(!l.open(e,b))return JNI_FALSE;picsay::Image im;if(!l.read(im)||!picsay::colorMatrix(im,values)||!l.write(im))return JNI_FALSE;return JNI_TRUE;}
 }
 static JNINativeMethod methods[]={
  {const_cast<char*>("invert"),const_cast<char*>("(Landroid/graphics/Bitmap;)Z"),reinterpret_cast<void*>(invert)},
@@ -52,6 +58,12 @@ static JNINativeMethod methods[]={
  {const_cast<char*>("mirror"),const_cast<char*>("(Landroid/graphics/Bitmap;ZZ)Z"),reinterpret_cast<void*>(mirror)},
  {const_cast<char*>("quantizeLuminance"),const_cast<char*>("(Landroid/graphics/Bitmap;I)Z"),reinterpret_cast<void*>(quantize)},
  {const_cast<char*>("boost"),const_cast<char*>("(Landroid/graphics/Bitmap;F)Z"),reinterpret_cast<void*>(boost)},
- {const_cast<char*>("multiplyColor"),const_cast<char*>("(Landroid/graphics/Bitmap;IF)Z"),reinterpret_cast<void*>(multiplyColor)}
+ {const_cast<char*>("multiplyColor"),const_cast<char*>("(Landroid/graphics/Bitmap;IF)Z"),reinterpret_cast<void*>(multiplyColor)},
+ {const_cast<char*>("sobel"),const_cast<char*>("(Landroid/graphics/Bitmap;F)Z"),reinterpret_cast<void*>(sobel)},
+ {const_cast<char*>("spherize"),const_cast<char*>("(Landroid/graphics/Bitmap;FFFF)Z"),reinterpret_cast<void*>(spherize)},
+ {const_cast<char*>("linearStretch"),const_cast<char*>("(Landroid/graphics/Bitmap;FFFF)Z"),reinterpret_cast<void*>(linearStretch)},
+ {const_cast<char*>("circleSplash"),const_cast<char*>("(Landroid/graphics/Bitmap;FFFI)Z"),reinterpret_cast<void*>(circleSplash)},
+ {const_cast<char*>("mixColor"),const_cast<char*>("(Landroid/graphics/Bitmap;IF)Z"),reinterpret_cast<void*>(mixColor)},
+ {const_cast<char*>("colorMatrix"),const_cast<char*>("(Landroid/graphics/Bitmap;[F)Z"),reinterpret_cast<void*>(colorMatrix)}
 };
 JNIEXPORT jint JNI_OnLoad(JavaVM* vm,void*){JNIEnv* env=nullptr;if(vm->GetEnv(reinterpret_cast<void**>(&env),JNI_VERSION_1_6)!=JNI_OK)return JNI_ERR;jclass cls=env->FindClass("com/devilhandle/picsay/NativeImageEngine");if(!cls)return JNI_ERR;if(env->RegisterNatives(cls,methods,sizeof(methods)/sizeof(methods[0]))!=JNI_OK)return JNI_ERR;return JNI_VERSION_1_6;}
