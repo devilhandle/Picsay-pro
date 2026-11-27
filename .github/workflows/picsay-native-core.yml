@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Verify Java and JNI signatures
+        run: python3 arm64-port/tools/verify-jni-facade.py
       - name: Configure
         run: cmake -S arm64-port/core -B build/host -DCMAKE_BUILD_TYPE=Release
       - name: Build
