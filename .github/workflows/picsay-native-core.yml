@@ -17,6 +17,39 @@ jobs:
       - uses: actions/checkout@v4
       - name: Audit original APK package and native ABIs
         run: python3 arm64-port/tools/audit-apk-package.py
+  decompile-original-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install JADX
+        run: |
+          curl -fL https://github.com/skylot/jadx/releases/download/v1.5.2/jadx-1.5.2.zip -o /tmp/jadx.zip
+          mkdir -p /tmp/jadx
+          unzip -q /tmp/jadx.zip -d /tmp/jadx
+          chmod +x /tmp/jadx/bin/jadx
+      - name: Decompile original APK and extract exact native contract
+        run: |
+          /tmp/jadx/bin/jadx --show-bad-code -d build/decompiled Picsay_Pro_v2.3.3.1_1766148552_latestmodapks.com.apk
+          echo "=== Native method declarations ==="
+          grep -R -n -E 'native[[:space:]]+[^;(]+\\(' build/decompiled/sources || true
+          echo "=== Native library loading ==="
+          grep -R -n -E 'loadLibrary|ImageOp|GLImageOp' build/decompiled/sources || true
+          echo "=== Decompiled classes ==="
+          find build/decompiled/sources -type f -name '*.java' | wc -l
+      - name: Preserve decompilation report
+        run: |
+          {
+            echo "=== Native method declarations ==="
+            grep -R -n -E 'native[[:space:]]+[^;(]+\\(' build/decompiled/sources || true
+            echo "=== Library loading ==="
+            grep -R -n -E 'loadLibrary|ImageOp|GLImageOp' build/decompiled/sources || true
+          } > build/native-contract.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: picsay-original-apk-decompiled-contract
+          path: |
+            build/native-contract.txt
+            build/decompiled/sources
   host-tests:
     runs-on: ubuntu-latest
     steps:
