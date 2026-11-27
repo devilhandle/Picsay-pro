@@ -11,10 +11,9 @@ bool spherize(Image&, float cx, float cy, float radius, float strength);
 bool linearStretch(Image&, float cx, float cy, float halfWidth, float scale);
 bool circleSplash(Image&, float cx, float cy, float radius, int segments);
 bool mixColor(Image&, uint32_t rgba, float amount);
-}
-
 bool heatMap(Image&, float intensity);
 bool mirror(Image&, bool horizontal, bool vertical);
 bool quantizeLuminance(Image&, int levels);
 bool boost(Image&, float amount);
 bool multiplyColor(Image&, uint32_t rgba, float amount);
+}
