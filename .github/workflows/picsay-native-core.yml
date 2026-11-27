@@ -31,7 +31,7 @@ jobs:
         run: |
           /tmp/jadx/bin/jadx --show-bad-code -d build/decompiled Picsay_Pro_v2.3.3.1_1766148552_latestmodapks.com.apk
           echo "=== Native method declarations ==="
-          grep -R -n -E 'native[[:space:]]+[^;(]+\\(' build/decompiled/sources || true
+          grep -R -n -E 'native[[:space:]]+' build/decompiled/sources || true
           echo "=== Native library loading ==="
           grep -R -n -E 'loadLibrary|ImageOp|GLImageOp' build/decompiled/sources || true
           echo "=== Decompiled classes ==="
@@ -40,7 +40,7 @@ jobs:
         run: |
           {
             echo "=== Native method declarations ==="
-            grep -R -n -E 'native[[:space:]]+[^;(]+\\(' build/decompiled/sources || true
+            grep -R -n -E 'native[[:space:]]+' build/decompiled/sources || true
             echo "=== Library loading ==="
             grep -R -n -E 'loadLibrary|ImageOp|GLImageOp' build/decompiled/sources || true
           } > build/native-contract.txt
